@@ -1,11 +1,18 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import { redirect } from "react-router-dom";
 
-const Login = () => {
+const Login = (props: { setName: (name: string) => void }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        if (loggedIn){
+            window.location.href = "/";
+        }
+    },[loggedIn]);
 
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
@@ -28,7 +35,9 @@ const Login = () => {
         if (response.status !== 200) {
             setError(content.message);
         } else {
-            redirect("/");
+            props.setName(content.name);
+            setError("");
+            setLoggedIn(true);
         }
     };
 
